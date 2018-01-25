@@ -27,20 +27,20 @@ var json=''
 switch(condition)
 {
 case 'fever' :
-	 json = '{"Response": "Suggested medicine for fever is Aspirin" };break;
+	 json = '{"Response": "Suggested medicine for fever is Aspirin" }';break;
 case 'dry cough' :
-	json = '{"Response": "Suggested medicine for dry cough is Robitussin"};break;
+	json = '{"Response": "Suggested medicine for dry cough is Robitussin"}';break;
 case 'headache' :
-	json = '{"Response": "Suggested medicine for headache is Acetaminophen"};break;
+	json = '{"Response": "Suggested medicine for headache is Acetaminophen"}';break;
 case 'indigestion' :
-	json = '{"Response": "Suggested medicine for indigestion is Antacids"};break;
+	json = '{"Response": "Suggested medicine for indigestion is Antacids"}';break;
 case 'cold' :
 case 'cough' :
-	json = '{"Response": "Suggested medicine for cold and cough is Dextromethorphan"};break;
+	json = '{"Response": "Suggested medicine for cold and cough is Dextromethorphan"}';break;
 
 case 'constipation':
-	json = '{"Response": "Suggested medicine for constipation is Laxatives"};break;
-default : json='{"Response": "Unable to understand. Try another query"};
+	json = '{"Response": "Suggested medicine for constipation is Laxatives"}';break;
+default : json='{"Response": "Unable to understand. Try another query"}';
 }
      obj=JSON.parse(json);
      res.send(obj);
