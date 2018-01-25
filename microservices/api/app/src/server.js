@@ -15,20 +15,13 @@ app.get('/wit', function(req, res) {
 res.sendFile(path.join(__dirname +'/index.html'));
 });
 
-
-
 app.post('/wit',function(req,res){
-//res.send('Your Question : '+req.body.Input);
 var question=req.body.Input
 const client = new Wit({accessToken: 'OMST7LGOVDCUU2IFQNWYNQCKKMSZBBD4'});
 client.message(question, {})
 .then((data) => {
 console.log(JSON.stringify(data));
 var med=''
-var intent=''
-intent=data.entities.intent[0].value;
-if(intent =='findMedicine')
-{
 var condition=data.entities.condition[0].value;
 switch(condition)
 {
@@ -50,9 +43,6 @@ default : med='not found. Try another query';
 }
      var output="Suggested medicine for "+condition+" is "+med;
      res.send(output);
-}
-else
-  console.log("Couldn't recognise your intent.Try another query.");
 })
 .catch(console.error);
 
