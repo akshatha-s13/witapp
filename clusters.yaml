@@ -1,0 +1,7 @@
+- alias: hasura
+  config:
+    configmap: controller-conf
+    namespace: beady27-hasura
+  data: null
+  kubeContext: beady27
+  name: beady27
