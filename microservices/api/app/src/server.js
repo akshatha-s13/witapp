@@ -23,26 +23,27 @@ client.message(question, {})
 console.log(JSON.stringify(data));
 var med=''
 var condition=data.entities.condition[0].value;
+var json=''
 switch(condition)
 {
 case 'fever' :
-	med='Aspirin';break;
+	 json = '{"Response": "Suggested medicine for fever is Aspirin" };break;
 case 'dry cough' :
-	med='Robitussin';break;
+	json = '{"Response": "Suggested medicine for dry cough is Robitussin"};break;
 case 'headache' :
-	med=' Acetaminophen';break;
+	json = '{"Response": "Suggested medicine for headache is Acetaminophen"};break;
 case 'indigestion' :
-	med='Antacids';break;
+	json = '{"Response": "Suggested medicine for indigestion is Antacids"};break;
 case 'cold' :
 case 'cough' :
-	med='Dextromethorphan';break;
+	json = '{"Response": "Suggested medicine for cold and cough is Dextromethorphan"};break;
 
 case 'constipation':
-	med='Laxatives';break;
-default : med='not found. Try another query';
+	json = '{"Response": "Suggested medicine for constipation is Laxatives"};break;
+default : json='{"Response": "Unable to understand. Try another query"};
 }
-     var output="Suggested medicine for "+condition+" is "+med;
-     res.send(output);
+     obj=JSON.parse(json);
+     res.send(obj);
 })
 .catch(console.error);
 
