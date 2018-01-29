@@ -1,0 +1,7 @@
+- args:
+    sql: CREATE TABLE "medicines"("condition" text NOT NULL, "drug" text NOT NULL,
+      PRIMARY KEY ("condition") )
+  type: run_sql
+- args:
+    name: medicines
+  type: add_existing_table_or_view

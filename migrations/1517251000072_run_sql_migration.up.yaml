@@ -1,0 +1,3 @@
+- args:
+    sql: SELECT * from medicines WHERE condition=fever
+  type: run_sql
