@@ -12,12 +12,12 @@ app.use(bodyParser.json());
 var config={
     
 database : 'hasuradb',
-user: process.env.user,
-host: process.env.host,
+user: 'admin',
+host:  'postgres.beady27-hasura',
 
-port: process.env.port,
+port: '5432',
 
-password: process.env.password
+password: 'dujxara-bxuzesb-agippuh-odcuwo'
 };
 
 var pool=new Pool(config);
