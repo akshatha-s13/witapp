@@ -15,31 +15,9 @@ database : 'hasuradb',
 user: 'admin',
 host:  'postgres.beady27-hasura',
 
-port: '5432',//5432
+port: '5432',
 password: 'dujxara-bxuzesb-agippuh-odcuwo'
 };
-
-var pool=new Pool(config);
-
-app.get('/test',function(req,res){
- 
-
-pool.query('SELECT * FROM Medicines',function(err,result){
-        
-if(err){
-            
-res.status(500).send(err.toString());
-       
- }
-        
-else{
-            
-res.send(JSON.stringify(result.rows));
-        
-}
-});
-
-});
 
 app.get('/', function(req, res) {
  res.send('Hello World - Go to /wit endpoint for help');
@@ -50,39 +28,58 @@ res.sendFile(path.join(__dirname +'/index.html'));
 });
 
 app.post('/wit',function(req,res){
-var question=req.body.Input
+var question=req.body.Input;
 const client = new Wit({accessToken: 'OMST7LGOVDCUU2IFQNWYNQCKKMSZBBD4'});
+var pool=new Pool(config);
+
+
 client.message(question, {})
 .then((data) => {
 console.log(JSON.stringify(data));
-var med=''
-var condition=data.entities.condition[0].value;
-var json=''
-switch(condition)
+
+var intent=data.entities.intent[0].value;
+switch(intent)
 {
-case 'fever' :
-	 json = '{"Response": "Suggested medicine for fever is Aspirin" }';break;
-case 'dry cough' :
-	json = '{"Response": "Suggested medicine for dry cough is Robitussin"}';break;
-case 'headache' :
-	json = '{"Response": "Suggested medicine for headache is Acetaminophen"}';break;
-case 'indigestion' :
-	json = '{"Response": "Suggested medicine for indigestion is Antacids"}';break;
-case 'cold' :
-case 'cough' :
-	json = '{"Response": "Suggested medicine for cold and cough is Dextromethorphan"}';break;
-
-case 'constipation':
-	json = '{"Response": "Suggested medicine for constipation is Laxatives"}';break;
-default : json='{"Response": "Unable to understand. Try another query"}';
+case 'findMedicine' :
+var condition=data.entities.condition[0].value;
+pool.query('SELECT * FROM medicines WHERE "condition"=$1',[condition],function(err,result){
+        
+if(err){
+            
+res.send(JSON.parse(JSON.stringify({"Response" : err.toString() })));    
+ }
+        
+else{
+            
+res.send(JSON.parse(JSON.stringify({"Response" : result.rows[0].drug})));
 }
-     obj=JSON.parse(json);
-     res.send(obj);
-})
-.catch(console.error);
-
 });
 
+break;
+
+case 'findCondition' :
+var drug=data.entities.drug[0].value;
+pool.query('SELECT * FROM medicines WHERE "drug"=$1',[drug],function(err,result){
+        
+if(err){
+            
+res.send(JSON.parse(JSON.stringify({"Response" : err.toString() })));    
+ }
+        
+else{
+            
+res.send(JSON.parse(JSON.stringify({"Response" : result.rows[0].condition })));
+}
+});
+
+break;
+
+default :  res.send(JSON.parse(JSON.stringify({"Response" : "Unable to find intent.Try another query"})));
+}
+
+})
+.catch(console.error);
+});
 
 var port=8080;
 app.listen(port, function() { 
