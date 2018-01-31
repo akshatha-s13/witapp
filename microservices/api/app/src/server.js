@@ -1,11 +1,45 @@
 var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
+var Pool = require('pg').Pool;
+
 var app = express();
 const Wit = require('node-wit').Wit;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+var config={
+    
+database : 'hasuradb',
+user: process.env.POSTGRES_USERNAME,
+host: process.env.POSTGRES_HOSTNAME,
+
+port: process.env.POSTGRES_PORT,
+
+password: process.env.POSTGRES_PASSWORD
+};
+
+var pool=new Pool(config);
+
+app.get('/test',function(req,res){
+    
+pool.query('SELECT * FROM Medicines',function(err,result){
+        
+if(err){
+            
+res.status(500).send(err.toString());
+       
+ }
+        
+else{
+            
+res.send(JSON.stringify(result.rows));
+        
+}
+});
+
+});
 
 app.get('/', function(req, res) {
  res.send('Hello World - Go to /wit endpoint for help');
