@@ -24,7 +24,7 @@ var pool=new Pool(config);
 app.get('/test',function(req,res){
  
 
-pool.query('SELECT * FROM Medicines',function(err,result){
+pool.query('SELECT * FROM drugs',function(err,result){
         
 if(err){
             
