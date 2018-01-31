@@ -15,15 +15,15 @@ database : 'hasuradb',
 user: 'admin',
 host:  'postgres.beady27-hasura',
 
-port: '5432',
-
+port: '5432',//5432
 password: 'dujxara-bxuzesb-agippuh-odcuwo'
 };
 
 var pool=new Pool(config);
 
 app.get('/test',function(req,res){
-    
+ 
+
 pool.query('SELECT * FROM Medicines',function(err,result){
         
 if(err){
