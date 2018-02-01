@@ -11,77 +11,123 @@ app.use(bodyParser.json());
 
 var config={
     
-database : 'hasuradb',
-user: 'admin',
-host:  'postgres.beady27-hasura',
+	database : 'hasuradb',
+	user: 'admin',
+	host:  'localhost',//postgres.beady27-hasura',
 
-port: '5432',
-password: 'dujxara-bxuzesb-agippuh-odcuwo'
+	port: '6432',//5432
+	password: 'dujxara-bxuzesb-agippuh-odcuwo'
+
 };
 
 app.get('/', function(req, res) {
- res.send('Hello World - Go to /wit endpoint for help');
+	res.send('Hello World - Go to /wit endpoint for help');
 });
 
 app.get('/wit', function(req, res) {
-res.sendFile(path.join(__dirname +'/index.html'));
+	res.sendFile(path.join(__dirname +'/index.html'));
 });
 
 app.post('/wit',function(req,res){
-var question=req.body.Input;
-const client = new Wit({accessToken: 'OMST7LGOVDCUU2IFQNWYNQCKKMSZBBD4'});
-var pool=new Pool(config);
+     
+	var question=req.body.Input;
+	const client = new Wit({accessToken: 'OMST7LGOVDCUU2IFQNWYNQCKKMSZBBD4'});
+	var pool=new Pool(config);
 
-
-client.message(question, {})
-.then((data) => {
-console.log(JSON.stringify(data));
-
-var intent=data.entities.intent[0].value;
-switch(intent)
-{
-case 'findMedicine' :
-var condition=data.entities.condition[0].value;
-pool.query('SELECT * FROM medicines WHERE "condition"=$1',[condition],function(err,result){
+	var json="";
+	client.message(question, {})
+	.then((data) => {
+	console.log(JSON.stringify(data));
+	try{
+		var intent=data.entities.intent[0].value;
+		console.log("User Intent : "+intent);
+		switch(intent)
+		{
+		case 'findMedicine' :
+			try{
+				var condition=data.entities.condition[0].value;
+				pool.query('SELECT * FROM medicines WHERE "condition"=$1',[condition],function(err,result){
         
-if(err){
-            
-res.send(JSON.parse(JSON.stringify({"Response" : err.toString() })));    
- }
+				if(err){
+  
+					json=err.toString();          
+					res.send(JSON.parse(JSON.stringify({"Response" : json })));    
+					}
         
-else{
-            
-res.send(JSON.parse(JSON.stringify({"Response" : result.rows[0].drug})));
-}
-});
+				else{
+     
+					if(result.rows.length==0){
+						json="Unable to find medicines";
+   						res.send(JSON.parse(JSON.stringify({"Response" : json}))); 
+  						}
+					else{
+						json=result.rows[0].drug;
+   						res.send(JSON.parse(JSON.stringify({"Response" : json})));
+   					    }
+				     }
+				});
 
-break;
+			   }catch(Error){
+					json="Medical Condition unrecognised";
+					res.send(JSON.parse(JSON.stringify({"Response" : json}))); 
+					}//try-catch condition
+	  		break;
 
-case 'findCondition' :
-var drug=data.entities.drug[0].value;
-pool.query('SELECT * FROM medicines WHERE "drug"=$1',[drug],function(err,result){
+		case 'findCondition' :
+			try{
+				var drug=data.entities.drug[0].value;
+				pool.query('SELECT * FROM medicines WHERE "drug"=$1',[drug],function(err,result){
         
-if(err){
-            
-res.send(JSON.parse(JSON.stringify({"Response" : err.toString() })));    
- }
+				if(err){
+   
+					json=err.toString();         
+					res.send(JSON.parse(JSON.stringify({"Response" : json })));    
+ 					}
         
-else{
+				else{
             
-res.send(JSON.parse(JSON.stringify({"Response" : result.rows[0].condition })));
-}
-});
+					if(result.rows.length==0){
+						json= "Unable to recognise medical condition";
+   						res.send(JSON.parse(JSON.stringify({"Response" : json}))); 
+						}
+					else{ 
+						json= result.rows[0].condition;
+   						res.send(JSON.parse(JSON.stringify({"Response" : json })));
+		        	    		}
+				    }
+				});
 
-break;
+			   }catch(Error){
+					json="Drug unrecognised";
+					res.send(JSON.parse(JSON.stringify({"Response" : json}))); break;
+					}//try-catch drug
+			break;
 
-default :  res.send(JSON.parse(JSON.stringify({"Response" : "Unable to find intent.Try another query"})));
-}
+		case "greeting" :  
+			json="Hey! How can I help you?";
+			res.send(JSON.parse(JSON.stringify({"Response" : json}))); 
+			break;
 
-})
-.catch(console.error);
-});
+		case "bye" : 
+			json="Thanks for using Health Assistant bot! Take Care! Bye!";
+			res.send(JSON.parse(JSON.stringify({"Response" : json}))); 
+			break;
+
+		default :  
+			json="Unable to find intent.Try another query";
+			res.send(JSON.parse(JSON.stringify({"Response" : json})));
+
+		}//switch
+	}catch(Error){
+		json="Intent unrecognised";
+		res.send(JSON.parse(JSON.stringify({"Response" : json}))); 
+		};//try-catch intent
+	})
+	.catch(console.error);
+
+});//app.post
 
 var port=8080;
 app.listen(port, function() { 
-console.log('Listening for connections on port '+port+'!');
+	console.log('Listening for connections on port '+port+'!');
 });
