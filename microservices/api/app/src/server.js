@@ -13,9 +13,9 @@ var config={
     
 	database : 'hasuradb',
 	user: 'admin',
-	host:  'localhost',//postgres.beady27-hasura',
+	host:  'postgres.beady27-hasura',
 
-	port: '6432',//5432
+	port: '5432',
 	password: 'dujxara-bxuzesb-agippuh-odcuwo'
 
 };
