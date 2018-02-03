@@ -61,7 +61,7 @@ app.post('/wit',function(req,res){
    						res.send(JSON.parse(JSON.stringify({"Response" : json}))); 
   						}
 					else{
-						json=result.rows[0].drug;
+						json="Suggested Medicine for "+condition+" is "+result.rows[0].drug;
    						res.send(JSON.parse(JSON.stringify({"Response" : json})));
    					    }
 				     }
