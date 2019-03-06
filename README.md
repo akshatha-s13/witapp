@@ -47,5 +47,8 @@ This service is written in javascript using nodejs-express framework. The source
 
 If you are using any extra packages, just add them to microservices/api/app/src/package.json and they will be 'npm installed' during the Docker build.
 
+You can find the entire project with frontend at this link.
+https://platform.hasura.io/hub/projects/Raphael/HealthAssistant
+
 ## Support
 If you find a bug, you can raise an issue here.
